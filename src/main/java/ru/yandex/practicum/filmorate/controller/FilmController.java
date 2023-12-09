@@ -39,7 +39,7 @@ public class FilmController {
         log.info("Updating film {}", film);
         FilmValidation.validate(film);
         if (!films.containsKey(film.getId())) {
-            throw new ValidationException();
+            throw new ValidationException("Фильма с таким id не существует.");
         }
         films.put(film.getId(), film);
         return film;

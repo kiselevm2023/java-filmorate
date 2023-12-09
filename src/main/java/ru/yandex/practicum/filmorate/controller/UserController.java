@@ -38,7 +38,7 @@ public class UserController {
         log.info("Updating user {}", user);
         UserValidation.validate(user);
         if (!users.containsKey(user.getId())) {
-            throw new ValidationException();
+            throw new ValidationException("Пользователя с данным id не существует.");
         }
         users.put(user.getId(), user);
         return user;
