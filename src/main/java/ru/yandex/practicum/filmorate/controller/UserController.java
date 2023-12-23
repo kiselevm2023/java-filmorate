@@ -2,10 +2,15 @@ package ru.yandex.practicum.filmorate.controller;
 
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.*;
-import org.springframework.web.server.ResponseStatusException;
-import ru.yandex.practicum.filmorate.exceptions.NotFoundException;
+
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.PathVariable;
 import ru.yandex.practicum.filmorate.service.UserService;
 import ru.yandex.practicum.filmorate.model.User;
 
@@ -36,20 +41,12 @@ public class UserController {
 
     @GetMapping("/{id}")
     public User findById(@PathVariable("id") int id) {
-        try {
-            return userService.findById(id);
-        } catch (NotFoundException e) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "User is not founded", e);
-        }
+        return userService.findById(id);
     }
 
     @PutMapping("/{id}/friends/{friendId}")
     public void addNewFriend(@PathVariable("id") int id, @PathVariable("friendId") int friendId) {
-        try {
-            userService.addNewFriend(id, friendId);
-        } catch (NotFoundException e) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "User is not founded", e);
-        }
+        userService.addNewFriend(id, friendId);
     }
 
     @DeleteMapping("/{id}/friends/{friendId}")
