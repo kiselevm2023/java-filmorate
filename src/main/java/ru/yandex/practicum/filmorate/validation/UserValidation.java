@@ -11,19 +11,19 @@ public class UserValidation {
 
     public static User validate(User user) {
         if (user.getEmail().isEmpty() || !user.getEmail().contains("@")) {
-            log.info("Валидация не пройдена");
-            throw new ValidationException("Почта должна содержать символ \"@\" и не быть пустым");
+            log.info("Validation is failed");
+            throw new ValidationException("Mail must contain the symbol \"@\" and not be empty");
         }
         if (user.getLogin().isEmpty() || user.getLogin().contains(" ")) {
-            log.info("Валидация не пройдена");
-            throw new ValidationException("Логин не может быть пустым и не должен содержать пробелы");
+            log.info("Validation is failed");
+            throw new ValidationException("Login cannot be empty and must not contain spaces");
         }
         if (user.getName() == null || user.getName().isEmpty()) {
             user.setName(user.getLogin());
         }
         if (user.getBirthday().isAfter(LocalDate.now())) {
-            log.info("Валидация не пройдена");
-            throw new ValidationException("Дата рождения не может быть в будущем");
+            log.info("Validation is failed");
+            throw new ValidationException("Date of birth cannot be in the future");
         }
         return user;
     }

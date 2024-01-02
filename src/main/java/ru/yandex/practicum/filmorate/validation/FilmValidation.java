@@ -13,20 +13,20 @@ public class FilmValidation {
 
     public static void validate(Film film) {
         if (film.getName().isEmpty()) {
-            log.info("Валидация не пройдена");
-            throw new ValidationException("Имя не может быть пустым");
+            log.info("Validation is failed");
+            throw new ValidationException("The name cannot be empty");
         }
         if (film.getDescription().length() > 200) {
-            log.info("Валидация не пройдена");
-            throw new ValidationException("Описание не может быть длиннее 200 символов");
+            log.info("Validation is failed");
+            throw new ValidationException("Description cannot be longer than 200 characters");
         }
         if (film.getReleaseDate().isBefore(date)) {
-            log.info("Валидация не пройдена");
-            throw new ValidationException("Дата не может быть раньше 28 декабря 1985 года");
+            log.info("Validation is failed");
+            throw new ValidationException("The date cannot be earlier than December 28, 1985");
         }
         if (film.getDuration() <= 0) {
-            log.info("Валидация не пройдена");
-            throw new ValidationException("Длительность фильма должна быть положительной");
+            log.info("Validation is failed");
+            throw new ValidationException("The duration of the film must be positive");
         }
     }
 }
