@@ -48,8 +48,12 @@ public class UserService {
     }
 
     public User updateUser(User user) {
-        UserValidation.validate(user);
-        return userStorage.update(user);
+        try {
+            UserValidation.validate(user);
+            return userStorage.update(user);
+        } catch (NotFoundException e) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "User is not founded", e);
+        }
     }
 
     public User findById(Integer id) {

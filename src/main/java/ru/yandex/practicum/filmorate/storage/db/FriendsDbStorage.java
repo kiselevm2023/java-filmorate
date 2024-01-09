@@ -4,6 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
+import ru.yandex.practicum.filmorate.exceptions.NotFoundException;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.storage.FriendsStorage;
 
@@ -33,8 +34,13 @@ public class FriendsDbStorage implements FriendsStorage {
 
     @Override
     public void addFriend(Integer userId, Integer friendId) {
-        String sql = "INSERT INTO friends VALUES(?,?);";
-        jdbcTemplate.update(sql, userId, friendId);
+        try {
+            String sql = "INSERT INTO friends VALUES(?,?);";
+            jdbcTemplate.update(sql, userId, friendId);
+        } catch (RuntimeException e) {
+            log.warn("User is not founded with ID=" + friendId);
+            throw new NotFoundException(String.format("The friend with friendId = %d is not founded.", friendId));
+        }
     }
 
     @Override

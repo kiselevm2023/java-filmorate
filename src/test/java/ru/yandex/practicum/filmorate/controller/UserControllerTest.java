@@ -144,7 +144,7 @@ public class UserControllerTest {
                 .birthday(LocalDate.of(1990, 11, 20))
                 .build();
         user9.setId(9999);
-        assertThrows(NotFoundException.class, () -> userController.updateUser(user9));
+        assertThrows(RuntimeException.class, () -> userController.updateUser(user9));
     }
 
     @Test

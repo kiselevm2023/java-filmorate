@@ -38,8 +38,12 @@ public class FilmService {
     }
 
     public Film updateFilm(@Valid @RequestBody Film film) {
-        FilmValidation.validate(film);
-        return filmStorage.update(film);
+        try {
+            FilmValidation.validate(film);
+            return filmStorage.update(film);
+        } catch (NotFoundException e) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Film is not founded", e);
+        }
     }
 
     public Collection<Film> findAll() {
