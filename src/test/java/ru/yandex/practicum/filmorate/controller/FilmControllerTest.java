@@ -30,33 +30,33 @@ public class FilmControllerTest {
 
     @BeforeEach
     void init() {
-        filmStorage = new InMemoryFilmStorage();
-        userStorage = new InMemoryUserStorage();
+        filmStorage=new InMemoryFilmStorage();
+        userStorage=new InMemoryUserStorage();
         //filmService = new FilmService(filmStorage, userStorage);
-        userService = new UserService(userStorage, friendsStorage);
-        filmService = new FilmService(filmStorage, userService, filmLikesStorage);
-        filmController = new FilmController(filmService);
+        userService=new UserService(userStorage, friendsStorage);
+        filmService=new FilmService(filmStorage, userService, filmLikesStorage);
+        filmController=new FilmController(filmService);
     }
 
     @Test
     void shouldCreateFilm() {
          /*Film film = new Film(1,"Terminator 2", "It is considered one of the best science fiction, action, and sequel films ever made",
                 LocalDate.of(1991,07,03),137); */
-        Film film = Film.builder()
+        Film film=Film.builder()
                 .name("Terminator 2")
                 .description("It is considered one of the best science fiction, action, and sequel films ever made")
                 .releaseDate(LocalDate.of(1991, 07, 03))
                 .duration(137)
                 .build();
         filmController.addNewFilm(film);
-        Collection<Film> films = filmController.findAll();
+        Collection<Film> films=filmController.findAll();
         assertNotNull(film, "Movie list is empty");
         assertEquals(1, films.size());
     }
 
     @Test
     void shouldNotCreateFilmWithEmptyName() {
-        Film film2 = Film.builder()
+        Film film2=Film.builder()
                 .name("")
                 .description("It is considered one of the best science fiction, action, and sequel films ever made")
                 .releaseDate(LocalDate.of(1991, 07, 03))
@@ -64,7 +64,7 @@ public class FilmControllerTest {
                 .build();
        /* Film film = new Film(2, "", "It is considered one of the best science fiction, action, and sequel films ever made",
                 LocalDate.of(1991,07,03),137);  */
-        Collection<Film> films = filmController.findAll();
+        Collection<Film> films=filmController.findAll();
         assertThrows(ValidationException.class, () -> filmController.addNewFilm(film2));
         assertEquals(0, films.size());
     }
@@ -79,7 +79,7 @@ public class FilmControllerTest {
                 "It is also seen as a major influence on visual effects in films, " +
                 "helping usher in the transition from practical effects to " +
                 "reliance on computer-generated imagery."); */
-        Film film3 = Film.builder()
+        Film film3=Film.builder()
                 .name("Terminator 2")
                 .description("It is considered one of the best science fiction, action, and sequel films ever made." +
                         "It is also seen as a major influence on visual effects in films, " +
@@ -88,7 +88,7 @@ public class FilmControllerTest {
                 .releaseDate(LocalDate.of(1991, 07, 03))
                 .duration(137)
                 .build();
-        Collection<Film> films = filmController.findAll();
+        Collection<Film> films=filmController.findAll();
         assertThrows(ValidationException.class, () -> filmController.addNewFilm(film3));
         assertEquals(0, films.size());
     }
@@ -98,13 +98,13 @@ public class FilmControllerTest {
         /* Film film = new Film(4,"Terminator 2", "It is considered one of the best science fiction, action, and sequel films ever made",
                 LocalDate.of(1809,07,03),137); */
         //film.setReleaseDate(LocalDate.of(1809, 07, 03));
-        Film film4= Film.builder()
+        Film film4=Film.builder()
                 .name("Terminator 2")
                 .description("It is considered one of the best science fiction, action, and sequel films ever made")
                 .releaseDate(LocalDate.of(1809, 07, 03))
                 .duration(137)
                 .build();
-        Collection<Film> films = filmController.findAll();
+        Collection<Film> films=filmController.findAll();
         assertThrows(ValidationException.class, () -> filmController.addNewFilm(film4));
         assertEquals(0, films.size());
     }
@@ -114,14 +114,14 @@ public class FilmControllerTest {
         /* Film film = new Film(5, "Terminator 2","It is considered one of the best science fiction, action, and sequel films ever made",
                 LocalDate.of(1991,07,03),-23, new HashSet<>());
         film.setDuration(-23); */
-        Film film5= Film.builder()
+        Film film5=Film.builder()
                 .name("Terminator 2")
                 .description("It is considered one of the best science fiction, action, and sequel films ever made")
                 .releaseDate(LocalDate.of(1991, 07, 03))
                 .duration(-23)
                 .build();
 
-        Collection<Film> films = filmController.findAll();
+        Collection<Film> films=filmController.findAll();
         assertThrows(ValidationException.class, () -> filmController.addNewFilm(film5));
         assertEquals(0, films.size());
     }
@@ -131,7 +131,7 @@ public class FilmControllerTest {
         /*Film film = new Film(6,"Terminator 2", "It is considered one of the best science fiction, action, and sequel films ever made",
                 LocalDate.of(1991,07,03),137, new HashSet<>()); */
         //filmController.addNewFilm(film);
-        Film film6= Film.builder()
+        Film film6=Film.builder()
                 .name("Terminator 2")
                 .description("It is considered one of the best science fiction, action, and sequel films ever made")
                 .releaseDate(LocalDate.of(1991, 07, 03))
@@ -140,7 +140,7 @@ public class FilmControllerTest {
         filmController.addNewFilm(film6);
         film6.setName("RoboCop");
         filmController.updateFilm(film6);
-        Collection<Film> films = filmController.findAll();
+        Collection<Film> films=filmController.findAll();
         assertEquals(1, films.size());
     }
 
@@ -148,7 +148,7 @@ public class FilmControllerTest {
     void shouldUpdateUnknown() {
         /*Film film = new Film(7,"Terminator 2", "It is considered one of the best science fiction, action, and sequel films ever made",
                 LocalDate.of(1991,07,03),137, new HashSet<>()); */
-        Film film7= Film.builder()
+        Film film7=Film.builder()
                 .name("Terminator 2")
                 .description("It is considered one of the best science fiction, action, and sequel films ever made")
                 .releaseDate(LocalDate.of(1991, 07, 03))
@@ -166,7 +166,7 @@ public class FilmControllerTest {
         Film film2 = new Film(9,"RoboCop", "It is science fiction action",
                 LocalDate.of(1987,07,17),99, new HashSet<>());  */
 
-        Film film8 = Film.builder()
+        Film film8=Film.builder()
                 .name("RoboCop")
                 .description("It is science fiction action")
                 .releaseDate(LocalDate.of(1987, 07, 17))
@@ -174,7 +174,7 @@ public class FilmControllerTest {
                 .build();
 
         filmController.addNewFilm(film8);
-        Film film9 = Film.builder()
+        Film film9=Film.builder()
                 .name("RoboCop")
                 .description("It is science fiction action")
                 .releaseDate(LocalDate.of(1987, 07, 17))
@@ -182,7 +182,7 @@ public class FilmControllerTest {
                 .build();
 
         filmController.addNewFilm(film9);
-        Collection<Film> films = filmController.findAll();
+        Collection<Film> films=filmController.findAll();
         assertEquals(2, films.size());
     }
 }
