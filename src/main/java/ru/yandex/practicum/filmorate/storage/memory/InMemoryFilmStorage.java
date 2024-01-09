@@ -1,9 +1,10 @@
-package ru.yandex.practicum.filmorate.storage.film;
+package ru.yandex.practicum.filmorate.storage.memory;
 
 import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.exceptions.NotFoundException;
 import ru.yandex.practicum.filmorate.exceptions.ValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
+import ru.yandex.practicum.filmorate.storage.FilmStorage;
 
 import java.util.Collection;
 import java.util.HashMap;
@@ -16,14 +17,14 @@ public class InMemoryFilmStorage implements FilmStorage {
     private Integer generatorId = 0;
 
     @Override
-    public Film addNewFilm(Film film) {
+    public Film create(Film film) {
         film.setId(++generatorId);
         films.put(film.getId(), film);
         return film;
     }
 
     @Override
-    public Film updateFilm(Film film) {
+    public Film update(Film film) {
         if (films.containsKey(film.getId())) {
             films.put(film.getId(), film);
         } else {
@@ -38,7 +39,7 @@ public class InMemoryFilmStorage implements FilmStorage {
     }
 
     @Override
-    public Film findById(Integer id) {
+    public Film filmById(Integer id) {
         if (films.containsKey(id)) {
             return films.get(id);
         } else {
@@ -46,7 +47,6 @@ public class InMemoryFilmStorage implements FilmStorage {
         }
     }
 
-    @Override
     public void deleteById(Integer id) {
         if (films.containsKey(id)) {
             films.remove(id);
