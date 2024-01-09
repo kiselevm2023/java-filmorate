@@ -35,7 +35,11 @@ public class UserService {
     }
 
     public Collection<User> findAll() {
-        return userStorage.findAll();
+        try {
+            return userStorage.findAll();
+        } catch (NotFoundException e) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "User is not founded", e);
+        }
     }
 
     public User createUser(User user) {

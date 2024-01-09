@@ -35,9 +35,8 @@ public class GenreDbStorage implements GenreStorage {
             String sql = "SELECT * FROM genres WHERE genre_id = ?;";
             return jdbcTemplate.queryForObject(sql, genreRowMapper(), genreId);
         } catch (RuntimeException e) {
-            log.warn("Не найден жанр с ID=" + genreId);
-            //throw new EntityNotFoundException("Не найден жанр с ID=" + genreId);
-            throw new NotFoundException(String.format("The film with id = %d is not founded.", genreId));
+            log.warn("Genre is not founded with ID=" + genreId);
+            throw new NotFoundException(String.format("The genre with id = %d is not founded.", genreId));
         }
     }
 

@@ -37,7 +37,6 @@ class FilmDbStorageTest {
                 LocalDate.of(1976, 2, 9), 114, new Mpa(4, "R"));
     }
 
-
     @Test
     @DirtiesContext
     void shouldReturnListSizeFilmWith1() {

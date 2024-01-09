@@ -40,8 +40,7 @@ public class FilmDbStorage implements FilmStorage {
         try {
             return jdbcTemplate.queryForObject(sql, filmRowMapper(), filmId);
         } catch (RuntimeException e) {
-            log.warn("Не найден фильм с ID=" + filmId);
-            //throw new FilmNotFoundException("Не найден фильм с ID=" + filmId);
+            log.warn("The film is not founded with  ID=" + filmId);
             throw new NotFoundException(String.format("The film with id = %d is not founded.", filmId));
         }
     }
@@ -72,8 +71,7 @@ public class FilmDbStorage implements FilmStorage {
     @Override
     public Film update(Film film) {
         if (filmById(film.getId()) == null) {
-            log.warn("Не найден фильм с ID=" + film.getId());
-            //throw new FilmNotFoundException("Не найден фильм с ID=" + film.getId());
+            log.warn("The film is not founded with ID=" + film.getId());
             throw new NotFoundException(String.format("The film with id = %d is not founded.", film.getId()));
         }
 
@@ -89,7 +87,7 @@ public class FilmDbStorage implements FilmStorage {
                 film.getMpa().getId(), film.getId());
 
         filmGenresDbStorage.updateGenres(film);
-        log.debug("В БД обновлен фильм: " + film);
+        log.debug("The movie has been updated in the database: " + film);
         return filmById(film.getId());
     }
 

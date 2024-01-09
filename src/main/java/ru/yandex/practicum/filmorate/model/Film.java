@@ -21,7 +21,6 @@ import java.util.TreeSet;
 @Validated
 @Builder
 public class Film {
-
     private Integer id;
     @NotNull
     @NotBlank
@@ -31,19 +30,6 @@ public class Film {
     private LocalDate releaseDate;
     @Positive
     private Integer duration;
-    //private Set<Integer> likes = new HashSet<>();
     private Mpa mpa;
     private  final Set<Genre> genres = new TreeSet<>(Comparator.comparing(Genre::getId));
-
-    /* public HashSet<Integer> getLikes() {
-        return new HashSet<>(likes);
-    }
-
-    public void setLikes(Integer id) {
-        likes.add(id);
-    }
-
-    public void deleteLike(Integer id) {
-        likes.remove(id);
-    } */
 }

@@ -29,17 +29,8 @@ public class UserControllerTest {
         userController = new UserController(userService);
     }
 
-    /*User user = User.builder()
-            .email("sergei@yandex.ru")
-            .login("sergei454")
-            .name("sergei")
-            .birthday(LocalDate.of(1990, 07, 14))
-            .build(); */
-
     @Test
     void shouldCreateUser() {
-        /*User user = new User(1,"sergei@yandex.ru", "sergei454", "sergei",
-                LocalDate.of(1990, 07, 14)); */
         User user = User.builder()
                 .email("sergei@yandex.ru")
                 .login("sergei454")
@@ -48,14 +39,12 @@ public class UserControllerTest {
                 .build();
         userController.createUser(user);
         Collection<User> users = userController.findAll();
-        assertNotNull(users, "Список пользователей пуст.");
+        assertNotNull(users, "User list is empty.");
         assertEquals(1, users.size());
     }
 
     @Test
     void shouldNotCreateUserWithEmptyEmail() {
-        /*User user = new User(2, "","sergei454", "sergei",
-                LocalDate.of(1990, 07, 14), new HashSet<>()); */
         User user2 = User.builder()
                 .email("")
                 .login("sergei454")
@@ -69,8 +58,6 @@ public class UserControllerTest {
 
     @Test
     void shouldNotCreateUserWithBadEmail() {
-        /*User user = new User(3,"sergei  /yandex.ru", "sergei454", "sergei",
-                LocalDate.of(1997, 04, 12), new HashSet<>()); */
         User user3 = User.builder()
                 .email("sergei  /yandex.ru")
                 .login("sergei454")
@@ -84,8 +71,6 @@ public class UserControllerTest {
 
     @Test
     void shouldNotCreateUserWithEmptyLogin() {
-        /*User user = new User(4, "sergei@yandex.ru", "", "sergei",
-                LocalDate.of(1995, 01, 12), new HashSet<>()); */
         User user4 = User.builder()
                 .email("sergei@yandex.ru")
                 .login("")
@@ -99,8 +84,6 @@ public class UserControllerTest {
 
     @Test
     void shouldNotCreateUserWithBadLogin() {
-        /*User user = new User(5,"sergei@yandex.ru", "sergei 1 2 3 4", "sergei",
-                LocalDate.of(1989, 02, 10), new HashSet<>()); */
         User user5 = User.builder()
                 .email("sergei@yandex.ru")
                 .login("sergei 1 2 3 4")
@@ -114,8 +97,6 @@ public class UserControllerTest {
 
     @Test
     void shouldCreateUserWithEmptyName() {
-        /*User user = new User(6,"sergei@yandex.ru", "sergei454", null,
-                LocalDate.of(1996, 07, 20), new HashSet<>()); */
         User user6 = User.builder()
                 .email("sergei@yandex.ru")
                 .login("sergei454")
@@ -128,8 +109,6 @@ public class UserControllerTest {
 
     @Test
     void shouldNotCreateUserWithBadBirthday() {
-        /*User user = new User(7,"sergei@yandex.ru", "sergei454", "sergei",
-                LocalDate.of(2044, 11, 20), new HashSet<>()); */
         User user7 = User.builder()
                 .email("sergei@yandex.ru")
                 .login("sergei454")
@@ -143,8 +122,6 @@ public class UserControllerTest {
 
     @Test
     void shouldUpdateUser() {
-        /* User user = new User(8,"sergei@yandex.ru", "sergei454", "sergei",
-                LocalDate.of(1999, 06, 29), new HashSet<>()); */
         User user8 = User.builder()
                 .email("sergei@yandex.ru")
                 .login("sergei454")
@@ -160,8 +137,6 @@ public class UserControllerTest {
 
     @Test
     void shouldUpdateUnknown() {
-        /*User user = new User(9,"sergei@gmail.com", "sergei454", "sergei",
-                LocalDate.of(1996,06,20), new HashSet<>()); */
         User user9 = User.builder()
                 .email("sergei@yandex.ru")
                 .login("sergei454")
@@ -174,8 +149,6 @@ public class UserControllerTest {
 
     @Test
     void shouldUpdateUserGetAll() {
-        /*User user = new User(10,"sergei@yandex.ru", "sergei454", "sergei",
-                LocalDate.of(1996, 06, 20), new HashSet<>()); */
         User user10 = User.builder()
                 .email("sergei@yandex.ru")
                 .login("sergei454")
@@ -183,8 +156,6 @@ public class UserControllerTest {
                 .birthday(LocalDate.of(1996, 06, 20))
                 .build();
         userController.createUser(user10);
-        /*User user2 = new User(11,"mickail@yandex.ru", "mickail1597", "mickail",
-                LocalDate.of(1990, 07, 22), new HashSet<>()); */
         User user11 = User.builder()
                 .email("mickail@yandex.ru")
                 .login("mickail1597")

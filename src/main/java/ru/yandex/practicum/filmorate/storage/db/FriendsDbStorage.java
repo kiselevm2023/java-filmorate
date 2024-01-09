@@ -53,7 +53,7 @@ public class FriendsDbStorage implements FriendsStorage {
                 commonFriends.add(user);
             }
         }
-        log.debug("Список общих друзей пользователя с id=" + userId + " и пользователя с id=" + otherId);
+        log.debug("List of mutual friends of the user with id=" + userId + " and user with id=" + otherId);
         return commonFriends;
     }
 }

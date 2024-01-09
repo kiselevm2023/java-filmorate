@@ -35,9 +35,8 @@ public class MpaDbStorage implements MpaStorage {
             String sql = "SELECT * FROM ratings WHERE rating_id = ?;";
             return jdbcTemplate.queryForObject(sql, mpaRowMapper(), mpaId);
         } catch (RuntimeException e) {
-            log.warn("Не найден mpa с ID=" + mpaId);
-            //throw new EntityNotFoundException("Не найден mpa с ID=" + mpaId);
-            throw new NotFoundException(String.format("The film with id = %d is not founded.", mpaId));
+            log.warn("Mpa is not founded with ID=" + mpaId);
+            throw new NotFoundException(String.format("The rating with id = %d is not founded.", mpaId));
         }
     }
 

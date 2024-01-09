@@ -2,7 +2,10 @@ package ru.yandex.practicum.filmorate.service;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
+import ru.yandex.practicum.filmorate.exceptions.NotFoundException;
 import ru.yandex.practicum.filmorate.model.Mpa;
 import ru.yandex.practicum.filmorate.storage.MpaStorage;
 
@@ -19,12 +22,16 @@ public class MpaService {
     }
 
     public Collection<Mpa> findAll() {
-        log.debug("Получен запрос на получение списка всех рейтингов");
+        log.debug("Request received for a list of all rating");
         return mpaStorage.findAll();
     }
 
     public Mpa mpaById(Integer mpaId) {
-        log.debug("Получен запрос на получение рейтинга с id=" + mpaId);
-        return mpaStorage.mpaById(mpaId);
+        try {
+            log.debug("Request received for a mpa with  id=" + mpaId);
+            return mpaStorage.mpaById(mpaId);
+        } catch (NotFoundException e) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Film is not founded", e);
+        }
     }
 }

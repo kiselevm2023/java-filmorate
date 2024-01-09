@@ -29,7 +29,7 @@ public class UserDbStorage implements UserStorage {
     public Collection<User> findAll() {
         String sql = "SELECT * FROM users;";
         Collection<User> users = jdbcTemplate.query(sql, userRowMapper());
-        log.debug("Из БД получен список пользователей:" + users);
+        log.debug("A list of users was obtained from the database:" + users);
         return users;
     }
 
@@ -38,10 +38,10 @@ public class UserDbStorage implements UserStorage {
         try {
             String sql = "SELECT * FROM users WHERE user_id = ?;";
             User user = jdbcTemplate.queryForObject(sql, userRowMapper(), userId);
-            log.debug("Из БД получен пользователь с ID=" + userId);
+            log.debug("A user was retrieved from the database with ID=" + userId);
             return user;
         } catch (RuntimeException e) {
-            log.warn("Не найден пользователь с ID=" + userId);
+            log.warn("User is not founded with ID=" + userId);
             throw new NotFoundException(String.format("The user with id = %d is not founded.", userId));
         }
     }
@@ -59,15 +59,14 @@ public class UserDbStorage implements UserStorage {
         );
         Number id = simpleJdbcInsert.executeAndReturnKey(params);
         user.setId(id.intValue());
-        log.debug("В БД добавлен пользователь: " + user);
+        log.debug("A user has been added to the database: " + user);
         return user;
     }
 
     @Override
     public User update(User user) {
         if (userById(user.getId()) == null) {
-            log.warn("Не найден пользователь с ID=" + user.getId());
-            //throw new UserNotFoundException("Не найден пользователь с ID=" + user.getId());
+            log.warn("User is not founded with ID=" + user.getId());
             throw new NotFoundException(String.format("The user with id = %d is not founded.", user.getId()));
         }
 
@@ -80,7 +79,7 @@ public class UserDbStorage implements UserStorage {
 
         jdbcTemplate.update(sql, user.getName(), user.getLogin(), user.getEmail(),
                 user.getBirthday(), user.getId());
-        log.debug("В БД обновлены данные пользователя с ID=" + user.getId());
+        log.debug("User data has been updated in the database with ID=" + user.getId());
         return userById(user.getId());
     }
 

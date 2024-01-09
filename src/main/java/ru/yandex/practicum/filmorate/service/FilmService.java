@@ -9,7 +9,6 @@ import org.springframework.web.server.ResponseStatusException;
 import ru.yandex.practicum.filmorate.exceptions.NotFoundException;
 import org.springframework.web.bind.annotation.PathVariable;
 import ru.yandex.practicum.filmorate.model.Film;
-
 import ru.yandex.practicum.filmorate.storage.FilmLikesStorage;
 import ru.yandex.practicum.filmorate.storage.FilmStorage;
 import ru.yandex.practicum.filmorate.validation.FilmValidation;
@@ -44,7 +43,11 @@ public class FilmService {
     }
 
     public Collection<Film> findAll() {
-        return filmStorage.findAll();
+        try {
+            return filmStorage.findAll();
+        } catch (NotFoundException e) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Film is not founded", e);
+        }
     }
 
     public Film findById(@PathVariable("id") Integer id) {

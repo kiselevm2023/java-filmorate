@@ -18,7 +18,6 @@ import java.time.LocalDate;
 @Validated
 @Builder
 public class User {
-
     private int id;
     @NotNull
     @NotBlank
@@ -30,17 +29,4 @@ public class User {
     private String name;
     @PastOrPresent
     private LocalDate birthday;
-    //private Set<Integer> friends = new HashSet<>();
-
-    /* public HashSet<Integer> getFriends() {
-        return new HashSet<>(friends);
-    }
-
-    public void setFriends(int id) {
-        friends.add(id);
-    }
-
-    public void deleteFriend(int id) {
-        friends.remove(id);
-    }  */
 }

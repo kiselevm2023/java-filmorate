@@ -36,13 +36,13 @@ public class FilmGenresDbStorage implements FilmGenresStorage {
                 "JOIN genres g ON g.genre_id = fg.genre_id " +
                 "WHERE film_id = ?";
         Collection<Genre> filmGenres = jdbcTemplate.query(sql, genreDbStorage.genreRowMapper(), filmId);
-        log.warn("Фильм с id=" + filmId + " имеет в БД список жанров: " + filmGenres);
+        log.warn("Film with id=" + filmId + " \n" + "has a list of genres in the database: " + filmGenres);
         return filmGenres;
     }
 
     @Override
     public void addGenres(Film film) {
-        log.warn("Добавление в БД список жанров фильма: " + film);
+        log.warn("Adding a list of movie genres to the database: " + film);
 
         List<Genre> genres = new ArrayList<>(film.getGenres());
         String sql = "INSERT INTO films_genres (genre_id, film_id) VALUES (?, ?);";
@@ -66,6 +66,6 @@ public class FilmGenresDbStorage implements FilmGenresStorage {
         String sqlDelete = "DELETE FROM films_genres WHERE film_id = ?";
         jdbcTemplate.update(sqlDelete, film.getId());
         addGenres(film);
-        log.debug("Обновление в БД списка жанров фильма: " + film);
+        log.debug("Updating the list of film genres in the database: " + film);
     }
 }
