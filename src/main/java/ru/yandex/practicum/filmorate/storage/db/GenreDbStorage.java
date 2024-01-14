@@ -20,6 +20,7 @@ public class GenreDbStorage implements GenreStorage {
 
     private static final String queryAllGenres = "SELECT * FROM genres;";
     private static final String queryGenreById = "SELECT * FROM genres WHERE genre_id = ?;";
+
     @Autowired
     public GenreDbStorage(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
