@@ -32,12 +32,12 @@ public class FilmService {
         this.filmLikesStorage = filmLikesStorage;
     }
 
-    public Film addNewFilm(@Valid @RequestBody Film film) {
+    public Film addNewFilm(@Valid Film film) {
         FilmValidation.validate(film);
         return filmStorage.create(film);
     }
 
-    public Film updateFilm(@Valid @RequestBody Film film) {
+    public Film updateFilm(@Valid Film film) {
         try {
             FilmValidation.validate(film);
             return filmStorage.update(film);
@@ -54,7 +54,7 @@ public class FilmService {
         }
     }
 
-    public Film findById(@PathVariable("id") Integer id) {
+    public Film findById(Integer id) {
         try {
             return filmStorage.filmById(id);
         } catch (NotFoundException e) {

@@ -20,6 +20,15 @@ import java.util.Map;
 public class UserDbStorage implements UserStorage {
     private final JdbcTemplate jdbcTemplate;
 
+    private static final String queryAllUsers = "SELECT * FROM users;";
+    private static final String queryUserById = "SELECT * FROM users WHERE user_id = ?;";
+    private static final String queryUpdateUser = "UPDATE users SET " +
+            "name = ?, " +
+            "login = ?, " +
+            "email = ?, " +
+            "birthday = ? " +
+            "WHERE user_id = ?;";
+
     @Autowired
     public UserDbStorage(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
@@ -27,8 +36,7 @@ public class UserDbStorage implements UserStorage {
 
     @Override
     public Collection<User> findAll() {
-        String sql = "SELECT * FROM users;";
-        Collection<User> users = jdbcTemplate.query(sql, userRowMapper());
+        Collection<User> users = jdbcTemplate.query(queryAllUsers, userRowMapper());
         log.debug("A list of users was obtained from the database:" + users);
         return users;
     }
@@ -36,8 +44,7 @@ public class UserDbStorage implements UserStorage {
     @Override
     public User userById(Integer userId) {
         try {
-            String sql = "SELECT * FROM users WHERE user_id = ?;";
-            User user = jdbcTemplate.queryForObject(sql, userRowMapper(), userId);
+            User user = jdbcTemplate.queryForObject(queryUserById, userRowMapper(), userId);
             log.debug("A user was retrieved from the database with ID=" + userId);
             return user;
         } catch (RuntimeException e) {
@@ -70,14 +77,7 @@ public class UserDbStorage implements UserStorage {
             throw new NotFoundException(String.format("The user with id = %d is not founded.", user.getId()));
         }
 
-        String sql = "UPDATE users SET " +
-                "name = ?, " +
-                "login = ?, " +
-                "email = ?, " +
-                "birthday = ? " +
-                "WHERE user_id = ?;";
-
-        jdbcTemplate.update(sql, user.getName(), user.getLogin(), user.getEmail(),
+        jdbcTemplate.update(queryUpdateUser, user.getName(), user.getLogin(), user.getEmail(),
                 user.getBirthday(), user.getId());
         log.debug("User data has been updated in the database with ID=" + user.getId());
         return userById(user.getId());

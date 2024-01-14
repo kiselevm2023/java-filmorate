@@ -22,6 +22,17 @@ public class FilmDbStorage implements FilmStorage {
     private final JdbcTemplate jdbcTemplate;
     private final FilmGenresDbStorage filmGenresDbStorage;
 
+    private static final String queryAllFilmsWithRatings = "SELECT * FROM films f JOIN ratings r ON r.rating_id = f.rating_id ORDER BY film_id;";
+    private static final String queryFilmById = "SELECT * FROM films f JOIN ratings r ON r.rating_id = f.rating_id WHERE film_id = ?;";
+    private static final String queryUpdateFilm = "UPDATE films SET " +
+            "name = ?, " +
+            "description  = ?, " +
+            "release_date  = ?, " +
+            "duration  = ?, " +
+            "rating_id = ? " +
+            "WHERE film_id = ?;";
+
+
     @Autowired
     public FilmDbStorage(JdbcTemplate jdbcTemplate, FilmGenresDbStorage filmGenresDbStorage) {
         this.jdbcTemplate = jdbcTemplate;
@@ -30,15 +41,13 @@ public class FilmDbStorage implements FilmStorage {
 
     @Override
     public Collection<Film> findAll() {
-        String sql = "SELECT * FROM films f JOIN ratings r ON r.rating_id = f.rating_id ORDER BY film_id;";
-        return jdbcTemplate.query(sql, filmRowMapper());
+        return jdbcTemplate.query(queryAllFilmsWithRatings, filmRowMapper());
     }
 
     @Override
     public Film filmById(Integer filmId) {
-        String sql = "SELECT * FROM films f JOIN ratings r ON r.rating_id = f.rating_id WHERE film_id = ?;";
         try {
-            return jdbcTemplate.queryForObject(sql, filmRowMapper(), filmId);
+            return jdbcTemplate.queryForObject(queryFilmById, filmRowMapper(), filmId);
         } catch (RuntimeException e) {
             log.warn("The film is not founded with  ID=" + filmId);
             throw new NotFoundException(String.format("The film with id = %d is not founded.", filmId));
@@ -75,15 +84,7 @@ public class FilmDbStorage implements FilmStorage {
             throw new NotFoundException(String.format("The film with id = %d is not founded.", film.getId()));
         }
 
-        String sql = "UPDATE films SET " +
-                "name = ?, " +
-                "description  = ?, " +
-                "release_date  = ?, " +
-                "duration  = ?, " +
-                "rating_id = ? " +
-                "WHERE film_id = ?;";
-
-        jdbcTemplate.update(sql, film.getName(), film.getDescription(), film.getReleaseDate(), film.getDuration(),
+        jdbcTemplate.update(queryUpdateFilm, film.getName(), film.getDescription(), film.getReleaseDate(), film.getDuration(),
                 film.getMpa().getId(), film.getId());
 
         filmGenresDbStorage.updateGenres(film);

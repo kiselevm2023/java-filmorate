@@ -18,6 +18,9 @@ import java.util.Collection;
 public class MpaDbStorage implements MpaStorage {
     private final JdbcTemplate jdbcTemplate;
 
+    private static final String queryAllMpa = "SELECT * FROM ratings;";
+    private static final String queryMpaById = "SELECT * FROM ratings WHERE rating_id = ?;";
+
     @Autowired
     public MpaDbStorage(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
@@ -25,15 +28,13 @@ public class MpaDbStorage implements MpaStorage {
 
     @Override
     public Collection<Mpa> findAll() {
-        String sql = "SELECT * FROM ratings;";
-        return jdbcTemplate.query(sql, mpaRowMapper());
+        return jdbcTemplate.query(queryAllMpa, mpaRowMapper());
     }
 
     @Override
     public Mpa mpaById(Integer mpaId) {
         try {
-            String sql = "SELECT * FROM ratings WHERE rating_id = ?;";
-            return jdbcTemplate.queryForObject(sql, mpaRowMapper(), mpaId);
+            return jdbcTemplate.queryForObject(queryMpaById, mpaRowMapper(), mpaId);
         } catch (RuntimeException e) {
             log.warn("Mpa is not founded with ID=" + mpaId);
             throw new NotFoundException(String.format("The rating with id = %d is not founded.", mpaId));

@@ -23,6 +23,13 @@ public class FilmGenresDbStorage implements FilmGenresStorage {
     private final JdbcTemplate jdbcTemplate;
     private final GenreDbStorage genreDbStorage;
 
+    private static final String queryAllGenresByFilm = "SELECT fg.genre_id, g.genre_name " +
+            "FROM films_genres fg " +
+            "JOIN genres g ON g.genre_id = fg.genre_id " +
+            "WHERE film_id = ?";
+    private static final String queryInsertGenresByFilm = "INSERT INTO films_genres (genre_id, film_id) VALUES (?, ?);";
+    private static final String queryDeleteGenresByFilm = "DELETE FROM films_genres WHERE film_id = ?";
+
     @Autowired
     public FilmGenresDbStorage(JdbcTemplate jdbcTemplate, GenreDbStorage genreDbStorage) {
         this.jdbcTemplate = jdbcTemplate;
@@ -31,11 +38,7 @@ public class FilmGenresDbStorage implements FilmGenresStorage {
 
     @Override
     public Collection<Genre> getGenresByFilmId(Integer filmId) {
-        String sql = "SELECT fg.genre_id, g.genre_name " +
-                "FROM films_genres fg " +
-                "JOIN genres g ON g.genre_id = fg.genre_id " +
-                "WHERE film_id = ?";
-        Collection<Genre> filmGenres = jdbcTemplate.query(sql, genreDbStorage.genreRowMapper(), filmId);
+        Collection<Genre> filmGenres = jdbcTemplate.query(queryAllGenresByFilm, genreDbStorage.genreRowMapper(), filmId);
         log.warn("Film with id=" + filmId + " \n" + "has a list of genres in the database: " + filmGenres);
         return filmGenres;
     }
@@ -45,9 +48,8 @@ public class FilmGenresDbStorage implements FilmGenresStorage {
         log.warn("Adding a list of movie genres to the database: " + film);
 
         List<Genre> genres = new ArrayList<>(film.getGenres());
-        String sql = "INSERT INTO films_genres (genre_id, film_id) VALUES (?, ?);";
 
-        jdbcTemplate.batchUpdate(sql, new BatchPreparedStatementSetter() {
+        jdbcTemplate.batchUpdate(queryInsertGenresByFilm, new BatchPreparedStatementSetter() {
             @Override
             public void setValues(@NonNull PreparedStatement ps, int i) throws SQLException {
                 ps.setInt(1, genres.get(i).getId());
@@ -63,8 +65,7 @@ public class FilmGenresDbStorage implements FilmGenresStorage {
 
     @Override
     public void updateGenres(Film film) {
-        String sqlDelete = "DELETE FROM films_genres WHERE film_id = ?";
-        jdbcTemplate.update(sqlDelete, film.getId());
+        jdbcTemplate.update(queryDeleteGenresByFilm, film.getId());
         addGenres(film);
         log.debug("Updating the list of film genres in the database: " + film);
     }

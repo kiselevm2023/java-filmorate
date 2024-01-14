@@ -20,6 +20,10 @@ public class FriendsDbStorage implements FriendsStorage {
     private final JdbcTemplate jdbcTemplate;
     private final UserDbStorage userDbStorage;
 
+    private static final String queryFriendsByUserId = "select * from users where user_id in (select friend_id from friends where user_id = ?);";
+    private static final String queryInsertFriendsByUserId = "INSERT INTO friends VALUES(?,?);";
+    private static final String queryDeleteFriendsByUserId = "DELETE FROM friends WHERE user_id = ? AND friend_id = ?;";
+
     @Autowired
     public FriendsDbStorage(JdbcTemplate jdbcTemplate, UserDbStorage userDbStorage) {
         this.jdbcTemplate = jdbcTemplate;
@@ -28,15 +32,13 @@ public class FriendsDbStorage implements FriendsStorage {
 
     @Override
     public Collection<User> getFriendsByUserId(Integer userId) {
-        String sql = "select * from users where user_id in (select friend_id from friends where user_id = ?);";
-        return jdbcTemplate.query(sql, userDbStorage.userRowMapper(), userId);
+        return jdbcTemplate.query(queryFriendsByUserId, userDbStorage.userRowMapper(), userId);
     }
 
     @Override
     public void addFriend(Integer userId, Integer friendId) {
         try {
-            String sql = "INSERT INTO friends VALUES(?,?);";
-            jdbcTemplate.update(sql, userId, friendId);
+            jdbcTemplate.update(queryInsertFriendsByUserId, userId, friendId);
         } catch (RuntimeException e) {
             log.warn("User is not founded with ID=" + friendId);
             throw new NotFoundException(String.format("The friend with friendId = %d is not founded.", friendId));
@@ -45,8 +47,7 @@ public class FriendsDbStorage implements FriendsStorage {
 
     @Override
     public void deleteFriend(Integer userId, Integer friendId) {
-        String sql = "DELETE FROM friends WHERE user_id = ? AND friend_id = ?;";
-        jdbcTemplate.update(sql, userId, friendId);
+        jdbcTemplate.update(queryDeleteFriendsByUserId, userId, friendId);
     }
 
     @Override

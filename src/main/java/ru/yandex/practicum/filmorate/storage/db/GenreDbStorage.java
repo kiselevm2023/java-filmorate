@@ -18,6 +18,8 @@ import java.util.Collection;
 public class GenreDbStorage implements GenreStorage {
     private final JdbcTemplate jdbcTemplate;
 
+    private static final String queryAllGenres = "SELECT * FROM genres;";
+    private static final String queryGenreById = "SELECT * FROM genres WHERE genre_id = ?;";
     @Autowired
     public GenreDbStorage(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
@@ -25,15 +27,13 @@ public class GenreDbStorage implements GenreStorage {
 
     @Override
     public Collection<Genre> findAll() {
-        String sql = "SELECT * FROM genres;";
-        return jdbcTemplate.query(sql, genreRowMapper());
+        return jdbcTemplate.query(queryAllGenres, genreRowMapper());
     }
 
     @Override
     public Genre genreById(Integer genreId) {
         try {
-            String sql = "SELECT * FROM genres WHERE genre_id = ?;";
-            return jdbcTemplate.queryForObject(sql, genreRowMapper(), genreId);
+            return jdbcTemplate.queryForObject(queryGenreById, genreRowMapper(), genreId);
         } catch (RuntimeException e) {
             log.warn("Genre is not founded with ID=" + genreId);
             throw new NotFoundException(String.format("The genre with id = %d is not founded.", genreId));

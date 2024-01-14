@@ -40,7 +40,6 @@ class FilmDbStorageTest {
     @Test
     @DirtiesContext
     void shouldReturnListSizeFilmWith1() {
-        tune();
         filmDbStorage.create(film);
 
         List<Film> savedFilms = new ArrayList<>(filmDbStorage.findAll());
@@ -52,7 +51,6 @@ class FilmDbStorageTest {
     @Test
     @DirtiesContext
     void shouldReturnFilmWithId1() {
-        tune();
         filmDbStorage.create(film);
 
         Film savedFilm = filmDbStorage.filmById(1);
@@ -65,7 +63,6 @@ class FilmDbStorageTest {
     @Test
     @DirtiesContext
     void shouldCreateFilmWithId1() {
-        tune();
         Film savedFilm = filmDbStorage.create(film);
 
         assertThat(savedFilm.getId())
@@ -75,7 +72,6 @@ class FilmDbStorageTest {
     @Test
     @DirtiesContext
     void shouldReturnNameNoNameFilm() {
-        tune();
         filmDbStorage.create(film);
         film.setName("No movie name");
 
