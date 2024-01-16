@@ -19,9 +19,9 @@ import java.util.List;
 @Component
 @Slf4j
 public class FilmGenresDbStorage implements FilmGenresStorage {
+
     private final JdbcTemplate jdbcTemplate;
     private final GenreDbStorage genreDbStorage;
-
     private static final String GET_GENRES_BY_FILM = "SELECT fg.genre_id, g.genre_name " +
             "FROM films_genres fg " +
             "JOIN genres g ON g.genre_id = fg.genre_id " +
@@ -45,7 +45,6 @@ public class FilmGenresDbStorage implements FilmGenresStorage {
     @Override
     public void addGenres(Film film) {
         log.warn("Adding a list of movie genres to the database: " + film);
-
         List<Genre> genres = new ArrayList<>(film.getGenres());
         jdbcTemplate.batchUpdate(INSERT_GENRES_BY_FILM , new BatchPreparedStatementSetter() {
             @Override
