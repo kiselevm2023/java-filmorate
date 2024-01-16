@@ -12,7 +12,7 @@ import ru.yandex.practicum.filmorate.storage.FilmStorage;
 import ru.yandex.practicum.filmorate.validation.FilmValidation;
 
 import javax.validation.Valid;
-import java.util.Collection;
+import java.util.List;
 import java.util.List;
 
 @Service
@@ -44,7 +44,7 @@ public class FilmService {
         }
     }
 
-    public Collection<Film> findAll() {
+    public List<Film> findAll() {
         try {
             return filmStorage.findAll();
         } catch (NotFoundException e) {
@@ -54,7 +54,7 @@ public class FilmService {
 
     public Film findById(Integer id) {
         try {
-            return filmStorage.filmById(id);
+            return filmStorage.findFilmById(id);
         } catch (NotFoundException e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Film is not founded", e);
         }
@@ -70,7 +70,7 @@ public class FilmService {
 
     public void deleteLike(Integer filmId, Integer userId) {
         try {
-            Film film = filmStorage.filmById(filmId);
+            Film film = filmStorage.findFilmById(filmId);
             userService.findById(userId);
             filmLikesStorage.deleteLikeByFilmId(filmId, userId);
         } catch (NotFoundException e) {

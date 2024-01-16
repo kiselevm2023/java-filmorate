@@ -1,7 +1,6 @@
 package ru.yandex.practicum.filmorate;
 
 import lombok.RequiredArgsConstructor;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
@@ -27,8 +26,8 @@ class FilmDbStorageTest {
     private FilmDbStorage filmDbStorage;
     private Film film;
 
-    @BeforeEach
-    void tune() {
+    @Autowired
+    void set() {
         GenreDbStorage genreDbStorage = new GenreDbStorage(jdbcTemplate);
         FilmGenresDbStorage filmGenresDbStorage = new FilmGenresDbStorage(jdbcTemplate, genreDbStorage);
         filmDbStorage = new FilmDbStorage(jdbcTemplate, filmGenresDbStorage);
@@ -53,7 +52,7 @@ class FilmDbStorageTest {
     void shouldReturnFilmWithId1() {
         filmDbStorage.create(film);
 
-        Film savedFilm = filmDbStorage.filmById(1);
+        Film savedFilm = filmDbStorage.findFilmById(1);
 
         assertThat(savedFilm)
                 .isNotNull()
@@ -77,7 +76,7 @@ class FilmDbStorageTest {
 
         filmDbStorage.update(film);
 
-        assertThat(filmDbStorage.filmById(1).getName())
+        assertThat(filmDbStorage.findFilmById(1).getName())
                 .isEqualTo("No movie name");
     }
 }

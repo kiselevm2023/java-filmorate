@@ -13,7 +13,7 @@ import ru.yandex.practicum.filmorate.storage.FilmStorage;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 
 @Component
@@ -22,9 +22,9 @@ public class FilmDbStorage implements FilmStorage {
     private final JdbcTemplate jdbcTemplate;
     private final FilmGenresDbStorage filmGenresDbStorage;
 
-    private static final String queryAllFilmsWithRatings = "SELECT * FROM films f JOIN ratings r ON r.rating_id = f.rating_id ORDER BY film_id;";
-    private static final String queryFilmById = "SELECT * FROM films f JOIN ratings r ON r.rating_id = f.rating_id WHERE film_id = ?;";
-    private static final String queryUpdateFilm = "UPDATE films SET " +
+    private static final String GET_ALL_FILMS_WITH_RATINGS = "SELECT * FROM films f JOIN ratings r ON r.rating_id = f.rating_id ORDER BY film_id;";
+    private static final String GET_FILM_BY_ID = "SELECT * FROM films f JOIN ratings r ON r.rating_id = f.rating_id WHERE film_id = ?;";
+    private static final String UPDATE_FILM = "UPDATE films SET " +
             "name = ?, " +
             "description  = ?, " +
             "release_date  = ?, " +
@@ -40,14 +40,14 @@ public class FilmDbStorage implements FilmStorage {
     }
 
     @Override
-    public Collection<Film> findAll() {
-        return jdbcTemplate.query(queryAllFilmsWithRatings, filmRowMapper());
+    public List<Film> findAll() {
+        return jdbcTemplate.query(GET_ALL_FILMS_WITH_RATINGS, filmRowMapper());
     }
 
     @Override
-    public Film filmById(Integer filmId) {
+    public Film findFilmById(Integer filmId) {
         try {
-            return jdbcTemplate.queryForObject(queryFilmById, filmRowMapper(), filmId);
+            return jdbcTemplate.queryForObject(GET_FILM_BY_ID, filmRowMapper(), filmId);
         } catch (RuntimeException e) {
             log.warn("The film is not founded with  ID=" + filmId);
             throw new NotFoundException(String.format("The film with id = %d is not founded.", filmId));
@@ -79,17 +79,17 @@ public class FilmDbStorage implements FilmStorage {
 
     @Override
     public Film update(Film film) {
-        if (filmById(film.getId()) == null) {
+        if (findFilmById(film.getId()) == null) {
             log.warn("The film is not founded with ID=" + film.getId());
             throw new NotFoundException(String.format("The film with id = %d is not founded.", film.getId()));
         }
 
-        jdbcTemplate.update(queryUpdateFilm, film.getName(), film.getDescription(), film.getReleaseDate(), film.getDuration(),
+        jdbcTemplate.update(UPDATE_FILM, film.getName(), film.getDescription(), film.getReleaseDate(), film.getDuration(),
                 film.getMpa().getId(), film.getId());
 
         filmGenresDbStorage.updateGenres(film);
         log.debug("The movie has been updated in the database: " + film);
-        return filmById(film.getId());
+        return findFilmById(film.getId());
     }
 
     protected RowMapper<Film> filmRowMapper() {

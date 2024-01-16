@@ -9,7 +9,7 @@ import ru.yandex.practicum.filmorate.exceptions.NotFoundException;
 import ru.yandex.practicum.filmorate.model.Mpa;
 import ru.yandex.practicum.filmorate.storage.MpaStorage;
 
-import java.util.Collection;
+import java.util.List;
 
 @Service
 @Slf4j
@@ -21,15 +21,15 @@ public class MpaService {
         this.mpaStorage = mpaStorage;
     }
 
-    public Collection<Mpa> findAll() {
+    public List<Mpa> findAll() {
         log.debug("Request received for a list of all rating");
         return mpaStorage.findAll();
     }
 
-    public Mpa mpaById(Integer mpaId) {
+    public Mpa getMpaById(Integer mpaId) {
         try {
             log.debug("Request received for a mpa with  id=" + mpaId);
-            return mpaStorage.mpaById(mpaId);
+            return mpaStorage.getMpaById(mpaId);
         } catch (NotFoundException e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Film is not founded", e);
         }

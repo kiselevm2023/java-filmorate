@@ -1,4 +1,4 @@
-INSERT INTO GENRES (genre_id, genre_name)
+MERGE INTO GENRES (GENRE_ID , GENRE_NAME)
 VALUES
 (1, 'Комедия'),
 (2, 'Драма'),
@@ -7,7 +7,7 @@ VALUES
 (5, 'Документальный'),
 (6, 'Боевик');
 
-INSERT INTO RATINGS (RATING_ID, RATING_NAME, RATING_DESC)
+MERGE INTO RATINGS (RATING_ID, RATING_NAME, RATING_DESC)
 VALUES
 (1, 'G', 'Film has no age restrictions'),
 (2, 'PG', 'Children are advised to watch the film with their parents'),

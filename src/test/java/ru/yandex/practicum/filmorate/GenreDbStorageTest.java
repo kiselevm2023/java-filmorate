@@ -8,7 +8,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import ru.yandex.practicum.filmorate.model.Genre;
 import ru.yandex.practicum.filmorate.storage.db.GenreDbStorage;
 
-import java.util.Collection;
+import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -21,13 +21,13 @@ public class GenreDbStorageTest {
 
     @Test
     public void testGetGenreById() {
-        Genre dbGenre = genreDbStorage.genreById(1);
+        Genre dbGenre = genreDbStorage.getGenreById(1);
         assertThat(dbGenre).hasFieldOrPropertyWithValue("id", 1);
     }
 
     @Test
     void testGetAllGenres() {
-        Collection<Genre> genres = genreDbStorage.findAll();
+        List<Genre> genres = genreDbStorage.findAll();
         assertEquals(6, genres.size());
     }
 }

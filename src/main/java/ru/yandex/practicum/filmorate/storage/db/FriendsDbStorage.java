@@ -9,7 +9,6 @@ import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.storage.FriendsStorage;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -20,9 +19,9 @@ public class FriendsDbStorage implements FriendsStorage {
     private final JdbcTemplate jdbcTemplate;
     private final UserDbStorage userDbStorage;
 
-    private static final String queryFriendsByUserId = "select * from users where user_id in (select friend_id from friends where user_id = ?);";
-    private static final String queryInsertFriendsByUserId = "INSERT INTO friends VALUES(?,?);";
-    private static final String queryDeleteFriendsByUserId = "DELETE FROM friends WHERE user_id = ? AND friend_id = ?;";
+    private static final String GET_FRIENDS_BY_USER_ID = "select * from users where user_id in (select friend_id from friends where user_id = ?);";
+    private static final String INSERT_FRIEND_BY_USER_ID = "INSERT INTO friends VALUES(?,?);";
+    private static final String DELETE_FRIEND_BY_USER_ID = "DELETE FROM friends WHERE user_id = ? AND friend_id = ?;";
 
     @Autowired
     public FriendsDbStorage(JdbcTemplate jdbcTemplate, UserDbStorage userDbStorage) {
@@ -31,14 +30,14 @@ public class FriendsDbStorage implements FriendsStorage {
     }
 
     @Override
-    public Collection<User> getFriendsByUserId(Integer userId) {
-        return jdbcTemplate.query(queryFriendsByUserId, userDbStorage.userRowMapper(), userId);
+    public List<User> getFriendsByUserId(Integer userId) {
+        return jdbcTemplate.query(GET_FRIENDS_BY_USER_ID, userDbStorage.userRowMapper(), userId);
     }
 
     @Override
     public void addFriend(Integer userId, Integer friendId) {
         try {
-            jdbcTemplate.update(queryInsertFriendsByUserId, userId, friendId);
+            jdbcTemplate.update(INSERT_FRIEND_BY_USER_ID, userId, friendId);
         } catch (RuntimeException e) {
             log.warn("User is not founded with ID=" + friendId);
             throw new NotFoundException(String.format("The friend with friendId = %d is not founded.", friendId));
@@ -47,7 +46,7 @@ public class FriendsDbStorage implements FriendsStorage {
 
     @Override
     public void deleteFriend(Integer userId, Integer friendId) {
-        jdbcTemplate.update(queryDeleteFriendsByUserId, userId, friendId);
+        jdbcTemplate.update(DELETE_FRIEND_BY_USER_ID, userId, friendId);
     }
 
     @Override

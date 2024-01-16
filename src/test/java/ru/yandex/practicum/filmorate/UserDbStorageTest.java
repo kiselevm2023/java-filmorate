@@ -1,7 +1,6 @@
 package ru.yandex.practicum.filmorate;
 
 import lombok.RequiredArgsConstructor;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
@@ -23,7 +22,7 @@ class UserDbStorageTest {
     private UserDbStorage userDbStorage;
     private User user;
 
-    @BeforeEach
+    @Autowired
     void set() {
         userDbStorage = new UserDbStorage(jdbcTemplate);
 
@@ -34,10 +33,9 @@ class UserDbStorageTest {
     @Test
     @DirtiesContext
     public void testFindUserById() {
-        set();
         userDbStorage.create(user);
 
-        User savedUser = userDbStorage.userById(1);
+        User savedUser = userDbStorage.findUserById(1);
 
         assertThat(savedUser)
                 .isNotNull()
@@ -48,7 +46,6 @@ class UserDbStorageTest {
     @Test
     @DirtiesContext
     public void testFindAll() {
-        set();
         userDbStorage.create(user);
 
         List<User> savedUsers = new ArrayList<>(userDbStorage.findAll());
@@ -60,8 +57,6 @@ class UserDbStorageTest {
     @Test
     @DirtiesContext
     public void testCreate() {
-        set();
-
         User newUser = userDbStorage.create(user);
 
         assertThat(newUser.getId())
@@ -71,13 +66,12 @@ class UserDbStorageTest {
     @Test
     @DirtiesContext
     public void testUpdate() {
-        set();
         userDbStorage.create(user);
         user.setName("No name");
 
         userDbStorage.update(user);
 
-        assertThat(userDbStorage.userById(1).getName())
+        assertThat(userDbStorage.findUserById(1).getName())
                 .isEqualTo("No name");
     }
 }

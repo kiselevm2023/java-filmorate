@@ -12,7 +12,7 @@ import ru.yandex.practicum.filmorate.storage.UserStorage;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 
 @Component
@@ -20,9 +20,9 @@ import java.util.Map;
 public class UserDbStorage implements UserStorage {
     private final JdbcTemplate jdbcTemplate;
 
-    private static final String queryAllUsers = "SELECT * FROM users;";
-    private static final String queryUserById = "SELECT * FROM users WHERE user_id = ?;";
-    private static final String queryUpdateUser = "UPDATE users SET " +
+    private static final String GET_ALL_USERS = "SELECT * FROM users;";
+    private static final String GET_USER_BY_ID = "SELECT * FROM users WHERE user_id = ?;";
+    private static final String UPDATE_USER = "UPDATE users SET " +
             "name = ?, " +
             "login = ?, " +
             "email = ?, " +
@@ -35,16 +35,16 @@ public class UserDbStorage implements UserStorage {
     }
 
     @Override
-    public Collection<User> findAll() {
-        Collection<User> users = jdbcTemplate.query(queryAllUsers, userRowMapper());
+    public List<User> findAll() {
+        List<User> users = jdbcTemplate.query(GET_ALL_USERS, userRowMapper());
         log.debug("A list of users was obtained from the database:" + users);
         return users;
     }
 
     @Override
-    public User userById(Integer userId) {
+    public User findUserById(Integer userId) {
         try {
-            User user = jdbcTemplate.queryForObject(queryUserById, userRowMapper(), userId);
+            User user = jdbcTemplate.queryForObject(GET_USER_BY_ID, userRowMapper(), userId);
             log.debug("A user was retrieved from the database with ID=" + userId);
             return user;
         } catch (RuntimeException e) {
@@ -72,15 +72,15 @@ public class UserDbStorage implements UserStorage {
 
     @Override
     public User update(User user) {
-        if (userById(user.getId()) == null) {
+        if (findUserById(user.getId()) == null) {
             log.warn("User is not founded with ID=" + user.getId());
             throw new NotFoundException(String.format("The user with id = %d is not founded.", user.getId()));
         }
 
-        jdbcTemplate.update(queryUpdateUser, user.getName(), user.getLogin(), user.getEmail(),
+        jdbcTemplate.update(UPDATE_USER, user.getName(), user.getLogin(), user.getEmail(),
                 user.getBirthday(), user.getId());
         log.debug("User data has been updated in the database with ID=" + user.getId());
-        return userById(user.getId());
+        return findUserById(user.getId());
     }
 
     protected RowMapper<User> userRowMapper() {

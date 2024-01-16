@@ -12,7 +12,7 @@ import ru.yandex.practicum.filmorate.storage.FriendsStorage;
 import ru.yandex.practicum.filmorate.storage.UserStorage;
 import ru.yandex.practicum.filmorate.validation.UserValidation;
 
-import java.util.Collection;
+import java.util.List;
 
 @Service
 public class UserService {
@@ -34,7 +34,7 @@ public class UserService {
         }
     }
 
-    public Collection<User> findAll() {
+    public List<User> findAll() {
         try {
             return userStorage.findAll();
         } catch (NotFoundException e) {
@@ -58,7 +58,7 @@ public class UserService {
 
     public User findById(Integer id) {
         try {
-            return userStorage.userById(id);
+            return userStorage.findUserById(id);
         } catch (NotFoundException e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "User is not founded", e);
         }
@@ -68,7 +68,7 @@ public class UserService {
         friendsStorage.deleteFriend(userId, friendId);
     }
 
-    public Collection<User> getUsersFriends(Integer id) {
+    public List<User> getUsersFriends(Integer id) {
         try {
             return friendsStorage.getFriendsByUserId(id);
         } catch (NotFoundException e) {
@@ -76,7 +76,7 @@ public class UserService {
         }
     }
 
-    public Collection<User> findCommonFriends(int userId, int otherId) {
+    public List<User> findCommonFriends(int userId, int otherId) {
         return friendsStorage.commonFriends(userId, otherId);
     }
 }

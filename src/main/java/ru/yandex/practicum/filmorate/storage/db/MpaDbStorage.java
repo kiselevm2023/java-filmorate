@@ -11,15 +11,15 @@ import ru.yandex.practicum.filmorate.storage.MpaStorage;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.Collection;
+import java.util.List;
 
 @Component
 @Slf4j
 public class MpaDbStorage implements MpaStorage {
     private final JdbcTemplate jdbcTemplate;
 
-    private static final String queryAllMpa = "SELECT * FROM ratings;";
-    private static final String queryMpaById = "SELECT * FROM ratings WHERE rating_id = ?;";
+    private static final String GET_ALL_MPA = "SELECT * FROM ratings;";
+    private static final String GET_MPA_BY_ID = "SELECT * FROM ratings WHERE rating_id = ?;";
 
     @Autowired
     public MpaDbStorage(JdbcTemplate jdbcTemplate) {
@@ -27,14 +27,14 @@ public class MpaDbStorage implements MpaStorage {
     }
 
     @Override
-    public Collection<Mpa> findAll() {
-        return jdbcTemplate.query(queryAllMpa, mpaRowMapper());
+    public List<Mpa> findAll() {
+        return jdbcTemplate.query(GET_ALL_MPA, mpaRowMapper());
     }
 
     @Override
-    public Mpa mpaById(Integer mpaId) {
+    public Mpa getMpaById(Integer mpaId) {
         try {
-            return jdbcTemplate.queryForObject(queryMpaById, mpaRowMapper(), mpaId);
+            return jdbcTemplate.queryForObject(GET_MPA_BY_ID, mpaRowMapper(), mpaId);
         } catch (RuntimeException e) {
             log.warn("Mpa is not founded with ID=" + mpaId);
             throw new NotFoundException(String.format("The rating with id = %d is not founded.", mpaId));

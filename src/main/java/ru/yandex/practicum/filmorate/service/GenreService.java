@@ -9,7 +9,7 @@ import ru.yandex.practicum.filmorate.exceptions.NotFoundException;
 import ru.yandex.practicum.filmorate.model.Genre;
 import ru.yandex.practicum.filmorate.storage.GenreStorage;
 
-import java.util.Collection;
+import java.util.List;
 
 @Service
 @Slf4j
@@ -22,15 +22,15 @@ public class GenreService {
         this.genreStorage = genreStorage;
     }
 
-    public Collection<Genre> findAll() {
+    public List<Genre> findAll() {
         log.debug("Request received for a list of all genres");
         return genreStorage.findAll();
     }
 
-    public Genre genreById(Integer genreId) {
+    public Genre getGenreById(Integer genreId) {
         try {
             log.debug("Request received for a genre with id=" + genreId);
-            return genreStorage.genreById(genreId);
+            return genreStorage.getGenreById(genreId);
         } catch (NotFoundException e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Film is not founded", e);
         }

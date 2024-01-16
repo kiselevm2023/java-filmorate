@@ -8,7 +8,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import ru.yandex.practicum.filmorate.model.Mpa;
 import ru.yandex.practicum.filmorate.storage.db.MpaDbStorage;
 
-import java.util.Collection;
+import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -21,13 +21,13 @@ public class MpaDbStorageTest {
 
     @Test
     public void testGetMpaById() {
-        Mpa dbMpa = mpaDbStorage.mpaById(1);
+        Mpa dbMpa = mpaDbStorage.getMpaById(1);
         assertThat(dbMpa).hasFieldOrPropertyWithValue("id", 1);
     }
 
     @Test
     void testGetAllMpa() {
-        Collection<Mpa> allMpa = mpaDbStorage.findAll();
+        List<Mpa> allMpa = mpaDbStorage.findAll();
         assertEquals(5, allMpa.size());
     }
 }
