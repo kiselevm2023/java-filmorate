@@ -47,6 +47,7 @@ public class FilmGenresDbStorage implements FilmGenresStorage {
         log.warn("Adding a list of movie genres to the database: " + film);
         List<Genre> genres = new ArrayList<>(film.getGenres());
         jdbcTemplate.batchUpdate(INSERT_GENRES_BY_FILM , new BatchPreparedStatementSetter() {
+
             @Override
             public void setValues(@NonNull PreparedStatement ps, int i) throws SQLException {
                 ps.setInt(1, genres.get(i).getId());
