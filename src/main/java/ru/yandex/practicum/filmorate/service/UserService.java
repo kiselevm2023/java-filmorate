@@ -1,90 +1,82 @@
 package ru.yandex.practicum.filmorate.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 import ru.yandex.practicum.filmorate.exceptions.NotFoundException;
 import ru.yandex.practicum.filmorate.model.User;
-import ru.yandex.practicum.filmorate.storage.user.UserStorage;
+
+import ru.yandex.practicum.filmorate.storage.FriendsStorage;
+import ru.yandex.practicum.filmorate.storage.UserStorage;
 import ru.yandex.practicum.filmorate.validation.UserValidation;
 
-import java.util.Collection;
 import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 @Service
 public class UserService {
 
-    private UserStorage userStorage;
+    private final UserStorage userStorage;
+    private final FriendsStorage friendsStorage;
 
     @Autowired
-    public UserService(UserStorage userStorage) {
+    public UserService(@Qualifier("userDbStorage") UserStorage userStorage, FriendsStorage friendsStorage) {
         this.userStorage = userStorage;
+        this.friendsStorage = friendsStorage;
     }
 
     public void addNewFriend(Integer userId, Integer friendId) {
         try {
-            User user = userStorage.findById(userId);
-            User friend = userStorage.findById(friendId);
-            user.setFriends(friendId);
-            friend.setFriends(userId);
+            friendsStorage.addFriend(userId, friendId);
         } catch (NotFoundException e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "User is not founded", e);
         }
     }
 
-    public Collection<User> findAll() {
-        return userStorage.findAll();
+    public List<User> findAll() {
+        try {
+            return userStorage.findAll();
+        } catch (NotFoundException e) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "User is not founded", e);
+        }
     }
 
     public User createUser(User user) {
         UserValidation.validate(user);
-        return userStorage.createUser(user);
+        return userStorage.create(user);
     }
 
     public User updateUser(User user) {
-        UserValidation.validate(user);
-        return userStorage.updateUser(user);
+        try {
+            UserValidation.validate(user);
+            return userStorage.update(user);
+        } catch (NotFoundException e) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "User is not founded", e);
+        }
     }
 
     public User findById(Integer id) {
         try {
-            return userStorage.findById(id);
+            return userStorage.findUserById(id);
         } catch (NotFoundException e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "User is not founded", e);
         }
     }
 
     public void deleteFriend(Integer userId, Integer friendId) {
-        User user = userStorage.findById(userId);
-        User friend = userStorage.findById(friendId);
-        user.deleteFriend(friendId);
-        friend.deleteFriend(userId);
+        friendsStorage.deleteFriend(userId, friendId);
     }
 
     public List<User> getUsersFriends(Integer id) {
         try {
-            User user = userStorage.findById(id);
-            return user.getFriends()
-                    .stream()
-                    .map(userStorage::findById)
-                    .collect(Collectors.toList());
+            return friendsStorage.getFriendsByUserId(id);
         } catch (NotFoundException e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "User is not founded", e);
         }
     }
 
-    public Collection<User> findCommonFriends(int userId, int otherUserId) {
-        User user = userStorage.findById(userId);
-        User otherUser = userStorage.findById(otherUserId);
-        Set<Integer> userFriends = user.getFriends();
-        Set<Integer> otherUserFriends = otherUser.getFriends();
-
-        return userFriends.stream()
-                .filter(otherUserFriends::contains)
-                .map(userStorage::findById)
-                .collect(Collectors.toList());
+    public List<User> findCommonFriends(int userId, int otherId) {
+        return friendsStorage.commonFriends(userId, otherId);
     }
 }
