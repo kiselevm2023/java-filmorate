@@ -11,5 +11,10 @@
 * JDBC - API для взаимодействия с базами данных
 * H2 - кроссплатформенная СУБД
 
+## Инструкция по развертыванию:
+* Скачать данный репозиторий
+* Выполнить команду mvn clean install
+* Запустить Jar-файл java -jar filename.jar, где filename - название исполняемого файла
+
 ### Структура базы данных:
 ![image](https://github.com/kiselevm2023/java-filmorate/blob/add-database/schema.png)
